@@ -1,35 +1,47 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Slider } from "./ui/slider";
 import { Label } from "./ui/label";
 
 export default function HexagonalCircleGenerator() {
-  const [radius, setRadius] = useState(10)
-  const [gridSize, setGridSize] = useState(21)
-  const maxRadius = 50
+  const [radius, setRadius] = useState(10);
+  const [displayedRadius, setDisplayedRadius] = useState(10);
+  const maxRadius = 50;
 
-  const hexSize = 10 // Size of hexagon (distance from center to corner)
-  const hexHeight = hexSize * 2
-  const hexWidth = Math.sqrt(3) * hexSize
+  const hexSize = 10; // Size of hexagon (distance from center to corner)
 
-  useEffect(() => {
+  // Memoized gridSize calculation
+  const gridSize = useMemo(() => {
     // Calculate grid size based on inradius
     // The inradius of a hexagon is (sqrt(3)/2) * circumradius
     // Add 4 to ensure there's always a border of hexagons around the circle
-    const circumradius = (2 / Math.sqrt(3)) * radius
-    setGridSize(Math.ceil(2 * circumradius) + 4)
-  }, [radius])
+    const circumradius = (2 / Math.sqrt(3)) * displayedRadius;
+    return Math.ceil(2 * circumradius) + 4;
+  }, [displayedRadius]);
 
-  const Hexagon = ({ x, y, isOnCircumference, isCenter }: { x: number; y: number; isOnCircumference: boolean; isCenter: boolean }) => {
+  // Hexagon component
+  const Hexagon = ({
+    x,
+    y,
+    isOnCircumference,
+    isCenter,
+  }: {
+    x: number;
+    y: number;
+    isOnCircumference: boolean;
+    isCenter: boolean;
+  }) => {
     const points = [
       [hexSize, 0],
-      [hexSize / 2, hexWidth / 2],
-      [-hexSize / 2, hexWidth / 2],
+      [hexSize / 2, Math.sqrt(3) * hexSize / 2],
+      [-hexSize / 2, Math.sqrt(3) * hexSize / 2],
       [-hexSize, 0],
-      [-hexSize / 2, -hexWidth / 2],
-      [hexSize / 2, -hexWidth / 2]
-    ].map(([px, py]) => `${px + x},${py + y}`).join(' ')
+      [-hexSize / 2, -Math.sqrt(3) * hexSize / 2],
+      [hexSize / 2, -Math.sqrt(3) * hexSize / 2],
+    ]
+      .map(([px, py]) => `${px + x},${py + y}`)
+      .join(' ');
 
     return (
       <polygon
@@ -38,46 +50,69 @@ export default function HexagonalCircleGenerator() {
         stroke="#d1d5db"
         strokeWidth="1"
       />
-    )
-  }
+    );
+  };
 
-  const generateHexagonalCircle = () => {
-    const hexagons = []
-    const center = Math.floor(gridSize / 2)
+  // Memoized hexagons generation to avoid unnecessary recalculations
+  const hexagons = useMemo(() => {
+    const generateHexagonalCircle = () => {
+      const hexagons = [];
+      const center = Math.floor(gridSize / 2);
 
-    for (let q = -center; q <= center; q++) {
-      for (let r = -center; r <= center; r++) {
-        const s = -q - r
-        if (Math.abs(s) <= center) {
-          const x = hexSize * 3/2 * q
-          const y = hexSize * (Math.sqrt(3)/2 * q + Math.sqrt(3) * r)
-          const distance = Math.sqrt(q*q + r*r + s*s) / Math.sqrt(2)
-          const isOnCircumference = Math.abs(distance - radius) < 0.5
-          const isCenter = q === 0 && r === 0 && s === 0
-          hexagons.push(
-            <Hexagon 
-              key={`${q},${r}`} 
-              x={x} 
-              y={y} 
-              isOnCircumference={isOnCircumference} 
-              isCenter={isCenter} 
-            />
-          )
+      for (let q = -center; q <= center; q++) {
+        for (let r = -center; r <= center; r++) {
+          const s = -q - r;
+          if (Math.abs(s) <= center) {
+            const x = hexSize * (3 / 2) * q;
+            const y = hexSize * ((Math.sqrt(3) / 2) * q + Math.sqrt(3) * r);
+            const distance = Math.sqrt(q * q + r * r + s * s) / Math.sqrt(2);
+            const isOnCircumference = Math.abs(distance - displayedRadius) < 0.5;
+            const isCenter = q === 0 && r === 0 && s === 0;
+            hexagons.push(
+              <Hexagon
+                key={`${q},${r}`}
+                x={x}
+                y={y}
+                isOnCircumference={isOnCircumference}
+                isCenter={isCenter}
+              />
+            );
+          }
         }
       }
+      return hexagons;
+    };
+
+    return generateHexagonalCircle();
+  }, [displayedRadius, gridSize]);
+
+  // Effect to update displayedRadius with a delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDisplayedRadius(radius);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [radius]);
+
+  // Manual input handler
+  const handleManualRadiusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value) && value >= 1 && value <= maxRadius) {
+      setRadius(value);
     }
+  };
 
-    return hexagons
-  }
-
-  const svgSize = (gridSize + 1) * hexSize * 2
+  const svgSize = (gridSize + 1) * hexSize * 2;
 
   return (
     <div className="flex flex-col items-center space-y-4 p-4">
       <h1 className="text-2xl font-bold">Hexagonal Circle Generator</h1>
-      <div className="w-full max-w-sm">
+
+      {/* Slider and Manual Input for Radius */}
+      <div className="flex items-center w-full max-w-sm space-x-6">
         <Label htmlFor="radius-slider" className="text-sm font-medium">
-          Radius: {radius}
+          Radius:
         </Label>
         <Slider
           id="radius-slider"
@@ -86,18 +121,29 @@ export default function HexagonalCircleGenerator() {
           step={1}
           value={[radius]}
           onValueChange={(value) => setRadius(value[0])}
-          className="mt-2"
+          className="flex-1"
+        />
+        <input
+          type="number"
+          min={1}
+          max={maxRadius}
+          value={radius}
+          onChange={handleManualRadiusChange}
+          className="w-20 border border-gray-300 p-2 rounded ml-2"
+          placeholder="Radius"
         />
       </div>
+
+      {/* SVG Rendering */}
       <div className="border border-gray-300 rounded-lg overflow-hidden bg-white">
-        <svg 
-          width={svgSize} 
-          height={svgSize} 
-          viewBox={`${-svgSize/2} ${-svgSize/2} ${svgSize} ${svgSize}`}
+        <svg
+          width={svgSize}
+          height={svgSize}
+          viewBox={`${-svgSize / 2} ${-svgSize / 2} ${svgSize} ${svgSize}`}
         >
-          {generateHexagonalCircle()}
+          {hexagons}
         </svg>
       </div>
     </div>
-  )
+  );
 }

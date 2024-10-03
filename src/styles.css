@@ -1,0 +1,36 @@
+/* styles.css */
+.slider-custom {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: #ddd;
+    border-radius: 2px;
+    outline: none;
+    margin: 1;
+    position: relative;
+}
+
+/* Styling the slider thumb */
+.slider-custom::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #007bff; /* Thumb color */
+    cursor: pointer;
+    position: relative;
+    top: -8px;
+}
+
+.slider-custom::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #007bff;
+    cursor: pointer;
+    position: relative;
+    top: -8px;
+}
+ 

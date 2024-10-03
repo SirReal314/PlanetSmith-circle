@@ -1,4 +1,5 @@
 import React from 'react';
+import '../../styles.css';
 
 export const Slider: React.FC<{
     id: string;
@@ -18,7 +19,8 @@ export const Slider: React.FC<{
             step={step}
             value={value[0]}
             onChange={(e) => onValueChange([Number(e.target.value)])}
-            className={`slider ${className}`}
+            className={`slider ${className} slider-custom`}
+            style={{ width: '200px', marginLeft: '10px', marginRight: '10px' }}
         />
     );
 };
