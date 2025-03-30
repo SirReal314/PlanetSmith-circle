@@ -148,15 +148,28 @@ export default function HexagonalCircleGenerator() {
         </svg>
       </div>
       
-      {/* Social Media Links */}
-      <div className="mt-4 flex">
-        <a href="https://discord.com/invite/YqMpxdq8k2" target="_blank" rel="noopener noreferrer">
-          <FaDiscord style={{ width: 30, height: 30, color: '#3b82f6' }} className="text-gray-700 hover:text-blue-500" />
-        </a>
-        <a href="https://github.com/SirReal314/PlanetSmith-circle" target="_blank" rel="noopener noreferrer" style={{ marginLeft: '32px' }}>
-          <FaGithub style={{ width: 30, height: 30, color: '#3b82f6' }} className="text-gray-700 hover:text-black" />
-        </a>
-      </div>
+
+      {/* Footer with Social Media Links */}
+      <footer
+        style={{
+          position: "fixed",
+          bottom: 0,
+          width: "100%",
+          textAlign: "center",
+          padding: "10px 0",
+          backgroundColor: "#f8f8f8",
+          borderTop: "1px solid #ddd",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "center", gap: "32px" }}>
+          <a href="https://discord.com/invite/YqMpxdq8k2" target="_blank" rel="noopener noreferrer">
+            <FaDiscord style={{ width: 30, height: 30, color: "#3b82f6" }} />
+          </a>
+          <a href="https://github.com/SirReal314/PlanetSmith-circle" target="_blank" rel="noopener noreferrer">
+            <FaGithub style={{ width: 30, height: 30, color: "#3b82f6" }} />
+          </a>
+        </div>
+      </footer>
     </div>
   )
 }
