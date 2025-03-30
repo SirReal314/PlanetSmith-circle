@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Slider } from "./ui/slider";
 import { Label } from "./ui/label";
+import { FaGithub, FaDiscord } from 'react-icons/fa';
 
 export default function HexagonalCircleGenerator() {
   const [radius, setRadius] = useState(10)
@@ -145,6 +146,16 @@ export default function HexagonalCircleGenerator() {
         >
           {hexagons}
         </svg>
+      </div>
+      
+      {/* Social Media Links */}
+      <div className="mt-4 flex">
+        <a href="https://discord.com/invite/YqMpxdq8k2" target="_blank" rel="noopener noreferrer">
+          <FaDiscord style={{ width: 30, height: 30, color: '#3b82f6' }} className="text-gray-700 hover:text-blue-500" />
+        </a>
+        <a href="https://github.com/SirReal314/PlanetSmith-circle" target="_blank" rel="noopener noreferrer" style={{ marginLeft: '16px' }}>
+          <FaGithub style={{ width: 30, height: 30, color: '#3b82f6' }} className="text-gray-700 hover:text-black" />
+        </a>
       </div>
     </div>
   )
