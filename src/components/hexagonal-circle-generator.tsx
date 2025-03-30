@@ -153,7 +153,7 @@ export default function HexagonalCircleGenerator() {
         <a href="https://discord.com/invite/YqMpxdq8k2" target="_blank" rel="noopener noreferrer">
           <FaDiscord style={{ width: 30, height: 30, color: '#3b82f6' }} className="text-gray-700 hover:text-blue-500" />
         </a>
-        <a href="https://github.com/SirReal314/PlanetSmith-circle" target="_blank" rel="noopener noreferrer" style={{ marginLeft: '16px' }}>
+        <a href="https://github.com/SirReal314/PlanetSmith-circle" target="_blank" rel="noopener noreferrer" style={{ marginLeft: '32px' }}>
           <FaGithub style={{ width: 30, height: 30, color: '#3b82f6' }} className="text-gray-700 hover:text-black" />
         </a>
       </div>
